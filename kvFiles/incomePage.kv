@@ -1,0 +1,498 @@
+
+
+
+<IncomePage>:
+    on_enter: root.asyncAllData()
+    # on_enter: 
+    #     root.spreadData('desc')
+    #     root.getTotalAvailable()
+    rvViewIncome: rvViewIncome
+    rvSearchIncome: rvSearchIncome
+    rvByIncome: rvByIncome
+    MDBoxLayout:
+        orientation: 'vertical'
+        size: self.size
+        pos: self.pos
+        MDToolbar:
+            title: "Income"
+            md_bg_color: utils.get_color_from_hex("#006494")
+            left_action_items: [['arrow-left', lambda x: root.change_screens('mainpage')]]
+            ExitButton:
+                pos_hint: {'x': 1, 'center_y': .5}
+        CustomTabs:
+            id: tabsContainer
+
+
+
+            Tab:
+                text: 'Add'
+                # title: 'Add'
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            padding: app.pad
+                            GridLayout:
+                                cols: 3
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomInput:
+                                    id: idday
+                                    text: root.currentDay
+                                    hint_text: 'day'
+                                    multiline: False
+                                    input_filter: "int"
+                                    on_text_validate: idmonth.focus=True
+                                CustomInput:
+                                    id: idmonth
+                                    text: root.currentMonth
+                                    hint_text: 'month'
+                                    multiline: False
+                                    input_filter: 'int'
+                                    on_text_validate: idyear.focus=True
+                                CustomInput:
+                                    id: idyear
+                                    text: root.currentYear
+                                    hint_text: 'year'
+                                    multiline: False
+                                    input_filter: 'int'
+                                    on_text_validate: idincome.focus=True
+                            GridLayout:
+                                cols: 3
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomInput:
+                                    id: idincome
+                                    text: ''
+                                    size_hint: .3, 1
+                                    hint_text: 'income'
+                                    multiline: False
+                                    input_filter: 'float'
+                                    on_text_validate: iddetails.focus=True
+                                CustomInput:
+                                    id: iddetails
+                                    text: ""
+                                    hint_text: 'details'
+                                    multiline: False
+                                    on_text_validate: iddescription.focus = True
+                            CustomInput:
+                                id: iddescription
+                                text: ''
+                                hint_text: 'description'
+                                multiline: True
+                                on_text_validate: root.add_data(idday.text, idmonth.text, idyear.text, idincome.text,iddetails.text, iddescription.text)
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: (self.width - self.children[0].width - self.children[1].width)
+                                CustomClearButton:
+                                    text: 'Clear'
+                                    on_release: 
+                                        idincome.text = ""
+                                        iddetails.text = ""
+                                        iddescription.text = ""
+                                        idincome.focus = True
+                                CustomRaisedButton:
+                                    text: '     Add     '
+                                    on_release: root.add_data(idday.text, idmonth.text, idyear.text, idincome.text,iddetails.text, iddescription.text)
+                                
+                        CustomCard:
+                            padding: app.pad
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomMDLabel:
+                                    text: "Loading........" if not root.totalAvailable else 'Total available: '  + root.totalAvailable + " lei"
+                                    font_size: sp(12)
+                                    halign: 'left'
+                                    height: self.texture_size[1] + 10
+
+
+
+
+
+
+
+
+
+            Tab:
+                # title: 'View'
+                text: 'View'
+                CustomGridWithCanvas:
+                    RecycleView:
+                        id: rvViewIncome
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(15)
+                        viewclass: 'IncomeRVButton'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+            
+
+
+
+
+
+
+
+
+            Tab:
+                # title: 'Search'
+                text: 'Search'
+                CustomGridWithCanvas:
+                    CustomCard:
+                        padding: app.pad
+                        CustomInput:
+                            id: idSearch
+                            hint_text: "search...."
+                            on_text_validate: root.search()
+                            on_text: root.search()
+                        CustomMDLabel:
+                            text: 'Found ' + root.resultsLabel
+                            halign: 'left'
+                            font_size: sp(12)
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint: 1, None
+                            height: self.minimum_height
+                            spacing: self.width - searchBtn.width - clearSearchBtn.width
+                            
+                            CustomClearButton:
+                                id: clearSearchBtn
+                                text: "Clear"
+                                on_release:
+                                    idSearch.text=""
+                                    rvSearchIncome.data = []
+                                    idSearch.focus = True
+                                    root.resultsLabel = "0"
+                            CustomRaisedButton:
+                                id: searchBtn
+                                text: "Search"
+                                disabled: True if not idSearch.text else False
+                                on_release: root.search()
+                    RecycleView:
+                        id: rvSearchIncome
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(5)
+                        viewclass: 'IncomeRVButton'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+
+
+            
+
+
+
+
+
+            Tab:
+                text: 'Edit'
+                # title: 'Edit'
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            padding: app.pad
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: app.pad
+                                CustomInput:
+                                    id: editday
+                                    input_filter: 'int'
+                                    hint_text: 'day'
+                                CustomInput:
+                                    id: editmonth
+                                    input_filter: 'int'
+                                    hint_text: 'month'
+                                CustomInput:
+                                    id: edityear
+                                    input_filter: 'int'
+                                    hint_text: 'year'
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: app.pad
+                                CustomInput:
+                                    id: editincome
+                                    input_filter: 'float'
+                                    hint_text: 'income'
+                                CustomInput:
+                                    id: editdetails
+                                    hint_text: 'details'
+                                    multiline: True
+                            CustomInput:
+                                id: editdescription
+                                hint_text: 'description'
+                                multiline: True
+                            CustomInput:
+                                id: editid
+                                hint_text: 'id'
+                                disabled: True
+                            MDGridLayout:
+                                rows: 1
+                                cols: 2
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: self.width - saveEditedButton.width - delButton.width
+                                CustomClearButton:
+                                    id: delButton
+                                    text: 'Delete'
+                                    disabled: True if root.itemId == "" else False
+                                    on_release: root.deleteFromDB()
+                                CustomRaisedButton:
+                                    id: saveEditedButton
+                                    text: 'Save edited'
+                                    disabled: True if root.itemId == "" else False
+                                    on_release: root.saveEditedEntry()
+
+            
+
+
+
+
+
+
+
+            Tab:
+                # title: 'By YMD'
+                text: 'By YMD'
+                CustomGridWithCanvas:
+                    RecycleView:
+                        id: rvByIncome
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(15)
+                        viewclass: 'CustomByIncome'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+                    MDGridLayout:
+                        cols: 3
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        spacing: (self.width - self.children[0].width - self.children[1].width - self.children[2].width) / 2
+                        CustomRaisedButtonDark:
+                            text: 'Year'
+                            on_release: root.getByYMD('year')
+                        CustomRaisedButtonDark:
+                            text: 'Month'
+                            on_release: root.getByYMD('month')
+                        CustomRaisedButtonDark:
+                            text: 'Day'
+                            on_release: root.getByYMD('day')
+            
+
+
+
+
+            
+
+
+
+
+
+
+
+            Tab:
+                # title: "Interval"
+                text: "Export interval"
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            padding: app.pad
+                            MDGridLayout:
+                                rows: 1
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomMDLabel:
+                                    text: 'From'
+                                    halign: 'left'
+                                    size_hint: 1, 1
+                                CustomInput:
+                                    id: dayFromInterval
+                                    hint_text: 'day'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: monthFromInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: monthFromInterval
+                                    hint_text: 'month'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: yearFromInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: yearFromInterval
+                                    hint_text: 'year'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: dayToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                            MDGridLayout:
+                                rows: 1
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomMDLabel:
+                                    text: 'To'
+                                    halign: 'left'
+                                    size_hint: 1, 1
+                                CustomInput:
+                                    id: dayToInterval
+                                    hint_text: 'day'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: monthToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: monthToInterval
+                                    hint_text: 'month'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: yearToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: yearToInterval
+                                    hint_text: 'year'
+                                    text: ''
+                                    input_filter: 'int'
+                                    on_text_validate: root.calculateInterval()
+                                    on_text: root.calculateInterval()
+                            MDGridLayout:
+                                cols: 1
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: totalLabel.height
+                                CustomMDLabel:
+                                    id: totalLabel
+                                    text: 'Total:'
+                                    halign: "left"
+                                    font_size: sp(12)
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: self.width - calculateBtn.width - clearBtn.width
+                                
+                                CustomClearButton:
+                                    id: clearBtn
+                                    text: 'Clear'
+                                    on_release:
+                                        dayFromInterval.text = ''
+                                        monthFromInterval.text = ''
+                                        yearFromInterval.text = ''
+                                        dayToInterval.text = ''
+                                        monthToInterval.text = ''
+                                        yearToInterval.text = ''
+                                        totalLabel.text = 'Total:'
+                                        root.intervalExportList = []
+                                        dayFromInterval.focus = True
+                                CustomRaisedButton:
+                                    id: calculateBtn
+                                    text: 'Calculate'
+                                    on_release: root.calculateInterval()
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: self.width - btnOne.width - btnTwo.width
+                                CustomRaisedButton:
+                                    id: btnOne
+                                    text: "Location to export"
+                                    disabled: True if root.intervalExportList == [] else False
+                                    on_release: root.openFileManager()
+                                CustomRaisedButton:
+                                    id: btnTwo
+                                    text: "Export interval"
+                                    disabled: True if root.intervalExportList == [] else False
+                                    on_release: root.exportIntervalToFile()
+                            CustomMDLabel:
+                                text: 'Location:\n' + root.savePath
+                                font_size: sp(10)
+                                halign: 'left'
+
+
+
+
+
+            Tab:
+                text: 'Export all'
+                # title: 'Save to file'
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            padding: app.pad
+                            CustomMDLabel:
+                                text: "Filename: " + fileName.text
+                                size_hint: 1, None
+                                height: self.texture_size[1]
+                                font_size: sp(12)
+                            CustomInput:
+                                id: fileName
+                                hint_text: 'name of the file'
+                            CustomMDLabel:
+                                text: "Final path:\n" + root.savePath + "/"+ fileName.text
+                                size_hint: 1, None
+                                font_size: dp(12)
+                                height: self.texture_size[1]
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: self.width - chooseFolder.width - clearBtn.width
+                                CustomClearButton:
+                                    id: clearBtn
+                                    text: 'Clear'
+                                    on_release: root.clearPath()
+                                CustomRaisedButton:
+                                    id: chooseFolder
+                                    disabled: True if not fileName.text else False
+                                    text: 'Choose destination folder'
+                                    on_release: root.openFileManager()
+                            MDGridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: self.width - self.children[0].width - self.children[1].width
+                                CustomRaisedButton:
+                                    text: 'Save txt'
+                                    disabled: True if not fileName.text else False
+                                    on_release: root.saveFile('txt')
+                                CustomRaisedButton:
+                                    text: 'Save csv'
+                                    disabled: True if not fileName.text else False
+                                    on_release: root.saveFile('csv')
+

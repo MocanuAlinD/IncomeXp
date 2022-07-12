@@ -1,0 +1,97 @@
+<SettingsPage>:
+    on_enter: root.getOldTotal()
+    MDBoxLayout:
+        orientation: 'vertical'
+        size: root.size
+        pos: root.pos
+        MDToolbar:
+            title: "Settings"
+            md_bg_color: utils.get_color_from_hex("#006494")
+            left_action_items: [['arrow-left', lambda x: root.change_screens('mainpage')]]
+            ExitButton:
+                pos_hint: {'x': 1, 'center_y': .5}
+        CustomScrollview:
+            CustomGridWithCanvas:
+                size_hint: 1, None
+                height: self.minimum_height
+                CustomCard:
+                    padding: app.pad
+                    orientation: 'horizontal'
+                    CustomInput:
+                        id: idOldTotal
+                        hint_text: 'before  ' + root.oldTotal + " lei"
+                        input_filter: "float"
+                        on_text_validate: root.newTotal()
+                    CustomRaisedButton:
+                        text: 'Change'
+                        disabled: True if not idOldTotal.text else False
+                        on_release: root.newTotal()
+
+
+                # INCOME REPLACE
+                CustomCard:
+                    padding: app.pad
+                    CustomMDLabel:
+                        text: 'Replace income DB with data from file'
+                        font_size: sp(12)
+                        halign: 'left'
+                    CustomMDLabel:
+                        text: root.filePathIncome if root.filePathIncome else "file path:"
+                        font_size: sp(10)
+                        halign: 'left'
+                    CustomRaisedButton:
+                        id: importIncomeBtn
+                        text: "Import txt/csv file."
+                        on_release: root.openFileManagerIncome()
+                    CustomMDLabel:
+                        text: root.demoTextIncome if root.demoTextIncome else "Demo text"
+                        font_size: sp(10)
+                        halign: 'left'
+                    CustomRaisedButton:
+                        text: 'Add new data'
+                        disabled: True if root.loadingIncome else False
+                        # on_release: root.fromFileToIncomeDb()
+                        on_release: root.asyncaddIncome()
+
+                # EXPENSES REPLACE
+                CustomCard:
+                    padding: app.pad
+                    CustomMDLabel:
+                        text: 'Replace expenses DB with data from file'
+                        font_size: sp(12)
+                        halign: 'left'
+                    CustomMDLabel:
+                        text: root.filePathExpenses if root.filePathExpenses else "file path:"
+                        halign: 'left'
+                        font_size: sp(10)
+                    CustomRaisedButton:
+                        text: "Import txt/csv file."
+                        id: importExpensesBtn
+                        on_release: root.openFileManagerExpenses()
+                    CustomMDLabel:
+                        text: root.demoTextExpenses if root.demoTextExpenses else "Demo text"
+                        font_size: sp(10)
+                        halign: 'left'
+                    CustomRaisedButton:
+                        text: 'Add new data'
+                        disabled: True if root.loadingExpenses else False
+                        on_release: root.asyncaddExpenses()
+                
+
+                CustomCard:
+                    orientation: 'vertical'
+                    CustomGrid:
+                        cols: 2
+                        padding: 0
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        spacing: dp(10)
+                        CustomRaisedButton:
+                            id: btnDeleteIncomeDB
+                            text: 'DEL income DB'
+                            on_release: root.clearIncomeTable()
+                        CustomRaisedButton:
+                            id: btnDeleteExpensesDB
+                            text: 'DEL expenses DB'
+                            on_release: root.clearExpensesTable()
+            

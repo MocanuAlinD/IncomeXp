@@ -1,0 +1,28 @@
+<MainPage>:
+    MDFloatLayout:
+        size: root.size
+        md_bg_color: utils.get_color_from_hex("#004E64")
+        ExitButton:
+            pos_hint: {'right': 0.97, 'top': 0.965}
+        MDIconButton:
+            icon: 'menu'
+            theme_text_color: "Custom"
+            text_color: 1,1,1,1
+            md_bg_color: 0,0,0,0
+            pos_hint: {'x': 0.02, 'top': 0.965}
+            on_release: root.change_screens('settingsPage')
+            # on_release: root.manager.current = 'settingsPage'
+
+        MDIconButton:
+            id: survey_icon
+            icon: 'images/survey1.png'
+            md_bg_color: 0,0,0,0
+            pos_hint: {'center_x':0.5, 'y':0.6}
+            # on_release: root.manager.current='incomePage'
+            on_release: root.change_screens('incomePage')
+        MDIconButton:
+            icon: 'images/money.png'
+            md_bg_color: 0,0,0,0
+            pos_hint: {'center_x':0.5, 'top':0.4}
+            # on_release: root.manager.current='expensesPage'
+            on_release: root.change_screens('expensesPage')

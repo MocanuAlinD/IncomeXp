@@ -1,0 +1,521 @@
+<ExpensesPage>:
+    on_enter: root.asyncAllData()
+    # on_enter: 
+    #     root.spreadData("desc")
+    #     root.getTotalToSpend()
+    rvView: rvView
+    rvSearch: rvSearch
+    rvBy: rvBy
+    MDBoxLayout:
+        orientation: 'vertical'
+        size: root.size
+        pos: root.pos
+        MDToolbar:
+            title: 'Expenses'
+            md_bg_color: app.bg_color
+            left_action_items: [['arrow-left', lambda x: root.change_screens('mainpage')]]
+            ExitButton:
+                pos_hint: {'x': 1, 'center_y': .5}
+        CustomTabs:
+            id: tabsContainer
+
+
+
+
+
+
+
+
+            
+            Tab:
+                text: 'Add'
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            spacing: 0
+                            MDGridLayout:
+                                cols: 3
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: app.pad
+                                CustomInput:
+                                    id: idday
+                                    text: root.currentDay
+                                    hint_text: 'day'
+                                    multiline: False
+                                    input_filter: "int"
+                                    on_text_validate: idmonth.focus=True
+                                CustomInput:
+                                    id: idmonth
+                                    text: root.currentMonth
+                                    hint_text: 'month'
+                                    multiline: False
+                                    input_filter: 'int'
+                                    on_text_validate: idyear.focus=True
+                                CustomInput:
+                                    id: idyear
+                                    text: root.currentYear
+                                    hint_text: 'year'
+                                    multiline: False
+                                    input_filter: 'int'
+                                    on_text_validate: idcash.focus=True
+                            GridLayout:
+                                cols: 3
+                                spacing: app.pad
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomInput:
+                                    id: idcash
+                                    size_hint: .3, 1
+                                    hint_text: 'cash'
+                                    input_filter: 'float'
+                                    on_text_validate: idproduct.focus=True
+                                CustomInput:
+                                    id: idproduct
+                                    hint_text: 'product'
+                                    on_text_validate: root.add_data(idday.text, idmonth.text, idyear.text, idcash.text,idproduct.text)
+                            GLRowsOne:
+                                height: "48dp"
+                                Check1:
+                                    active: True
+                                    on_active: root.check_active(stuff.text,*args)
+                                Check1:
+                                    on_active: root.check_active(food.text,*args)
+                                Check1:
+                                    on_active: root.check_active(beverages.text,*args)
+                                Check1:
+                                    on_active: root.check_active(cigarette.text,*args)
+                                Check1:
+                                    on_active: root.check_active(house.text,*args)
+                                Check1:
+                                    on_active: root.check_active(fuel.text,*args)
+                            GLRowsOne:
+                                CustomMDLabel:
+                                    id: stuff
+                                    font_size: sp(10)
+                                    text: 'Stuff'
+                                CustomMDLabel:
+                                    id: food
+                                    font_size: sp(10)
+                                    text: 'Food'
+                                CustomMDLabel:
+                                    id: beverages
+                                    font_size: sp(10)
+                                    text: 'Beverages'
+                                CustomMDLabel:
+                                    id: cigarette
+                                    font_size: sp(10)
+                                    text: 'Cigarette'
+                                CustomMDLabel:
+                                    id: house
+                                    font_size: sp(10)
+                                    text: 'For house'
+                                CustomMDLabel:
+                                    id: fuel
+                                    font_size: sp(10)
+                                    text: 'Fuel'
+                            GLRowsOne:
+                                padding: [0, app.pad ,0,0]
+                                spacing: self.width - self.children[0].width - self.children[1].width
+                                CustomClearButton:
+                                    text: "Clear"
+                                    on_release:
+                                        idcash.text = ""
+                                        idproduct.text = ""
+                                        idcash.focus = True
+                                CustomRaisedButton:
+                                    text: '     Add     '
+                                    on_release: root.add_data(idday.text, idmonth.text, idyear.text, idcash.text,idproduct.text)
+                        CustomCard:
+                            GridLayout:
+                                rows: 1
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                CustomMDLabel:
+                                    text: "Loading........" if not root.totalToSpend else 'Total available: ' + root.totalToSpend + " lei"
+                                    font_size: sp(12)
+                                    halign: 'left'
+                                    height: self.texture_size[1] + 10
+
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+            Tab:
+                text: 'View'
+                CustomGridWithCanvas:
+                    RecycleView:
+                        id: rvView
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(15)
+                        viewclass: 'RVButton'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+
+
+
+
+
+
+
+
+
+            Tab:
+                text: 'Search'
+                CustomGridWithCanvas:
+                    CustomCard:
+                        CustomInput:
+                            id: idSearch
+                            hint_text: "search...."
+                            on_text_validate: root.search()
+                            on_text: root.search()
+                        CustomMDLabel:
+                            text: 'Found ' + root.resultsLabel
+                            halign: 'left'
+                            font_size: sp(12)
+                        BoxLayoutHorizontal:
+                            spacing: self.width - searchBtn.width - clearSearchBtn.width
+                            CustomClearButton:
+                                id: clearSearchBtn
+                                text: "Clear"
+                                on_release:
+                                    idSearch.text=""
+                                    rvSearch.data = []
+                                    idSearch.focus = True
+                            CustomRaisedButton:
+                                id: searchBtn
+                                text: "Search"
+                                disabled: True if not idSearch.text else False
+                                on_release: root.search()
+                    RecycleView:
+                        id: rvSearch
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(5)
+                        viewclass: 'RVButton'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+
+
+
+
+
+
+
+            Tab:
+                text: 'Edit'
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            GLRowsOne:
+                                spacing: app.pad
+                                CustomInput:
+                                    id: editday
+                                    input_filter: 'int'
+                                    hint_text: 'day'
+                                CustomInput:
+                                    id: editmonth
+                                    input_filter: 'int'
+                                    hint_text: 'month'
+                                CustomInput:
+                                    id: edityear
+                                    input_filter: 'int'
+                                    hint_text: 'year'
+                            CustomInput:
+                                id: editprice
+                                input_filter: 'float'
+                                hint_text: 'cash'
+                            CustomInput:
+                                id: editproduct
+                                hint_text: 'product'
+                                multiline: True
+                            BoxLayoutHorizontal:
+                                orientation: 'vertical'
+                                size_hint: 1, None
+                                height: self.minimum_height
+                                spacing: 0
+                                GLRowsOne:
+                                    height: "48dp"
+                                    Check2:
+                                        active: True if root.productType == 'Stuff' else False
+                                        on_active: root.check_active_edit(editStuff.text,*args)
+                                    Check2:
+                                        active: True if root.productType == 'Food' else False
+                                        on_active: root.check_active_edit(editFood.text,*args)
+                                    Check2:
+                                        active: True if root.productType == 'Beverages' else False
+                                        on_active: root.check_active_edit(editBeverages.text,*args)
+                                    Check2:
+                                        active: True if root.productType == 'Cigarette' else False
+                                        on_active: root.check_active_edit(editCigarette.text,*args)
+                                    Check2:
+                                        active: True if root.productType == 'For house' else False
+                                        on_active: root.check_active_edit(editHouse.text,*args)
+                                    Check2:
+                                        active: True if root.productType == 'Fuel' else False
+                                        on_active: root.check_active_edit(editFuel.text,*args)
+                                GLRowsOne:
+                                    CustomMDLabel:
+                                        id: editStuff
+                                        font_size: sp(10)
+                                        text: 'Stuff'
+                                    CustomMDLabel:
+                                        id: editFood
+                                        font_size: sp(10)
+                                        text: 'Food'
+                                    CustomMDLabel:
+                                        id: editBeverages
+                                        font_size: sp(10)
+                                        text: 'Beverages'
+                                    CustomMDLabel:
+                                        id: editCigarette
+                                        font_size: sp(10)
+                                        text: 'Cigarette'
+                                    CustomMDLabel:
+                                        id: editHouse
+                                        font_size: sp(10)
+                                        text: 'For house'
+                                    CustomMDLabel:
+                                        id: editFuel
+                                        font_size: sp(10)
+                                        text: 'Fuel'
+                            CustomInput:
+                                id: editid
+                                hint_text: 'Id'
+                                disabled: True
+                            GLRowsOne:
+                                cols: 2
+                                spacing: self.width - saveEditedButton.width - delButton.width
+                                CustomClearButton:
+                                    id: delButton
+                                    text: 'Delete'
+                                    disabled: True if root.itemId == "" else False
+                                    on_release: root.deleteFromDB()
+                                CustomRaisedButton:
+                                    id: saveEditedButton
+                                    text: 'Save edited item'
+                                    disabled: True if root.itemId == "" else False
+                                    on_release: root.saveEditedEntry()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            Tab:
+                text: 'By YMD'
+                CustomGridWithCanvas:
+                    RecycleView:
+                        id: rvBy
+                        size_hint: 1,1
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(15)
+                        viewclass: 'CustomBy'
+                        RecycleBoxLayout:
+                            default_size: 1, None
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(3)
+                    GLRowsOne:
+                        cols: 3
+                        spacing: (self.width - self.children[0].width - self.children[1].width - self.children[2].width) / 2
+                        CustomRaisedButtonDark:
+                            text: 'Year'
+                            on_release: root.getByYMD('year')
+                        CustomRaisedButtonDark:
+                            text: 'Month'
+                            on_release: root.getByYMD('month')
+                        CustomRaisedButtonDark:
+                            text: 'Day'
+                            on_release: root.getByYMD('day')
+
+
+
+
+
+
+
+
+
+
+
+            Tab:
+                text: "Export interval"
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            GLRowsOne:
+                                spacing: app.pad
+                                CustomMDLabel:
+                                    text: 'From'
+                                    halign: 'left'
+                                    size_hint: 1, 1
+                                CustomInput:
+                                    id: dayFromInterval
+                                    hint_text: 'day'
+                                    input_filter: 'int'
+                                    on_text_validate: monthFromInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: monthFromInterval
+                                    hint_text: 'month'
+                                    input_filter: 'int'
+                                    on_text_validate: yearFromInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: yearFromInterval
+                                    hint_text: 'year'
+                                    input_filter: 'int'
+                                    on_text_validate: dayToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                            GLRowsOne:
+                                spacing: app.pad
+                                CustomMDLabel:
+                                    text: 'To'
+                                    halign: 'left'
+                                    size_hint: 1, 1
+                                CustomInput:
+                                    id: dayToInterval
+                                    hint_text: 'day'
+                                    input_filter: 'int'
+                                    on_text_validate: monthToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: monthToInterval
+                                    hint_text: 'month'
+                                    input_filter: 'int'
+                                    on_text_validate: yearToInterval.focus=True
+                                    on_text: root.calculateInterval()
+                                CustomInput:
+                                    id: yearToInterval
+                                    hint_text: 'year'
+                                    input_filter: 'int'
+                                    on_text_validate: root.calculateInterval()
+                                    on_text: root.calculateInterval()
+                            CustomMDLabel:
+                                id: totalLabel
+                                text: 'Total:'
+                                halign: "left"
+                                font_size: sp(12)
+                                size_hint: 1, None
+                                height: self.texture_size[1]
+                            GLRowsOne:
+                                spacing: self.width - calculateBtn.width - clearBtn.width
+                                CustomClearButton:
+                                    id: clearBtn
+                                    text: 'Clear'
+                                    on_release:
+                                        dayFromInterval.text = ''
+                                        monthFromInterval.text = ''
+                                        yearFromInterval.text = ''
+                                        dayToInterval.text = ''
+                                        monthToInterval.text = ''
+                                        yearToInterval.text = ''
+                                        totalLabel.text = 'Total:'
+                                        root.intervalExportList = []
+                                        dayFromInterval.focus = True
+                                CustomRaisedButton:
+                                    id: calculateBtn
+                                    text: 'Calculate'
+                                    on_release: root.calculateInterval()
+                                
+                            GLRowsOne:
+                                spacing: self.width - btnOne.width - btnTwo.width
+                                CustomRaisedButton:
+                                    id: btnOne
+                                    text: "Location to export"
+                                    disabled: True if root.intervalExportList == [] else False
+                                    on_release: root.openFileManager()
+                                CustomRaisedButton:
+                                    id: btnTwo
+                                    text: "Export interval"
+                                    disabled: True if root.intervalExportList == [] else False
+                                    on_release: root.exportIntervalToFile()
+                            CustomMDLabel:
+                                text: 'Location:\n' + root.savePath
+                                font_size: sp(10)
+                                halign: 'left'
+
+            
+
+
+            Tab:
+                text: "Export all"
+                CustomScrollview:
+                    CustomGridWithCanvas:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        CustomCard:
+                            CustomMDLabel:
+                                text: "Filename: " + fileName.text
+                                size_hint: 1, None
+                                height: self.texture_size[1]
+                                font_size: sp(12)
+                            CustomInput:
+                                id: fileName
+                                hint_text: 'write a filename here'
+                            CustomMDLabel:
+                                text: "Final path:\n" + root.savePath + "/"+ fileName.text
+                                size_hint: 1, None
+                                font_size: dp(12)
+                                height: self.texture_size[1]
+                            BoxLayoutHorizontal:
+                                spacing: self.width - chooseFolder.width - clearBtn.width
+                                CustomClearButton:
+                                    id: clearBtn
+                                    text: 'Clear'
+                                    on_release: 
+                                        root.clearPath()
+                                        fileName.focus = True
+                                CustomRaisedButton:
+                                    id: chooseFolder
+                                    disabled: True if not fileName.text else False
+                                    text: 'Choose destination folder'
+                                    on_release: root.openFileManager()
+                            GLRowsOne:
+                                spacing: self.width - self.children[0].width - self.children[1].width
+                                CustomRaisedButton:
+                                    text: 'Save txt'
+                                    disabled: True if not fileName.text else False
+                                    on_release: root.saveFile('txt')
+                                CustomRaisedButton:
+                                    text: 'Save csv'
+                                    disabled: True if not fileName.text else False
+                                    on_release: root.saveFile('csv')

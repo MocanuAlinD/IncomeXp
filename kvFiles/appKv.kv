@@ -1,0 +1,218 @@
+#:import utils kivy.utils
+
+
+<Tab@MDTabsBase+FloatLayout>:
+    
+
+<Check1@MDCheckbox>:
+    group: 'group1'
+    unselected_color: 1,1,1,.8
+    selected_color: 0,1,0,1
+
+<Check2@MDCheckbox>:
+    group: 'group2'
+    unselected_color: 1,1,1,.8
+    selected_color: 0,1,0,1
+
+<ExitButton@MDIconButton>:
+    icon: 'exit-to-app'
+    size_hint: None, None
+    background_color: 1,0,0,1
+    width: dp(50)
+    height: dp(20)
+    pos_hint: {'right': 0.98, 'top': 0.98}
+    theme_text_color: "Custom"
+    text_color: utils.get_color_from_hex('#e76f51')
+    on_release: app.stop()
+
+<CustomBy@OneLineListItem>:
+    halign: 'left'
+    markup: True
+    theme_text_color: 'Custom'
+    text_color: 1,1,1,0.8
+    font_style: 'Body2'
+    font_name: 'Poppins'
+    bg_color: utils.get_color_from_hex("#006494")
+
+<CustomByIncome@OneLineListItem>:
+    halign: 'left'
+    markup: True
+    theme_text_color: 'Custom'
+    text_color: 1,1,1,0.8
+    font_style: 'Body2'
+    font_name: 'Poppins'
+    bg_color: utils.get_color_from_hex("#006494")
+
+<RVButton>:
+    halign: 'left'
+    markup: True
+    theme_text_color: 'Custom'
+    secondary_theme_text_color: 'Custom'
+    tertiary_theme_text_color: 'Custom'
+    text_color: 1,1,1,1
+    secondary_text_color: 1,1,1,1
+    tertiary_text_color: 1,1,1,1
+    font_style: 'Subtitle1'
+    secondary_font_style: 'Caption'
+    tertiary_font_style: 'Caption'
+    font_name: 'Poppins'
+    bg_color: utils.get_color_from_hex("#006494")
+    # bg_color: utils.get_color_from_hex("#ff6494")
+    IconLeftWidget:
+        icon: "delete-outline"
+        theme_text_color: "Custom"
+        text_color: utils.get_color_from_hex("#f77f00")
+        on_release: root.deleteEntry()
+    IconRightWidget:
+        icon: "pencil-outline"
+        theme_text_color: "Custom"
+        text_color: 1,1,1,1
+        on_release: root.editEntry()
+    
+
+<IncomeRVButton>:
+    halign: 'left'
+    markup: True
+    theme_text_color: 'Custom'
+    secondary_theme_text_color: 'Custom'
+    tertiary_theme_text_color: 'Custom'
+    text_color: 1,1,1,1
+    secondary_text_color: 1,1,1,1
+    tertiary_text_color: 1,1,1,1
+    font_style: 'Subtitle1'
+    secondary_font_style: 'Caption'
+    tertiary_font_style: 'Caption'
+    font_name: 'Poppins'
+    bg_color: utils.get_color_from_hex("#006494")
+    IconLeftWidget:
+        icon: "delete-outline"
+        theme_text_color: "Custom"
+        text_color: utils.get_color_from_hex("#f77f00")
+        on_release: root.deleteEntry()
+    IconRightWidget:
+        icon: "pencil-outline"
+        theme_text_color: "Custom"
+        text_color: 1,1,1,1
+        on_release: root.editEntry()
+    
+        
+<CustomInput@MDTextField>:
+    # mode: "round"
+    color_mode: "custom"
+    # theme_text_color: "Custom"
+    line_color_normal: 1,1,1,1
+    line_color_focus: 1,1,1,1
+    hint_text_color_normal: 1,1,1,.2
+    hint_text_color_focus: 1,1,1,1
+    current_hint_text_color: 1,1,1,.5
+    fill_color: 1,1,1,.3
+    #fill_color_focus: 1,0,1,1
+    text_color: 1,1,1,1
+    font_name: 'Poppins'
+    font_name_hint_text: 'Poppins'
+    font_name_helper_text: 'Poppins'
+
+<CustomRaisedButton@MDRaisedButton>:
+    theme_text_color: 'Custom'
+    md_bg_color: 0,0,0,0
+    md_bg_color_disabled: 0,0,0,0
+    text_color: 1,1,1,1
+    font_name: 'Poppins'
+    elevation: 0
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#118ab2")
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [10]
+
+<CustomRaisedButtonDark@CustomRaisedButton>:
+    canvas.before:
+        Color:
+            rgba: app.bg_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [10]
+
+<CustomCard@MDCard>:
+    orientation: 'vertical'
+    md_bg_color: 0,0,1,0
+    spacing: app.pad
+    padding: app.pad
+    size_hint: 1, None
+    height: self.minimum_height
+    elevation: 0
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#006494")
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [dp(8)]
+
+<CustomMDLabel@MDLabel>:
+    halign: 'center'
+    valign: 'middle'
+    theme_text_color: 'Custom'
+    text_color: 1,1,1,1
+    size_hint: 1, None
+    height: self.texture_size[1]
+    font_name: "Poppins"
+
+<CustomClearButton@MDRectangleFlatButton>:
+    theme_text_color: "Custom"
+    line_color: app.orange
+    text_color: app.orange
+    font_name: "Poppins"
+
+<CustomGrid@MDGridLayout>:
+    cols: 1
+    padding: app.pad
+    spacing: app.pad
+
+<CustomGridWithCanvas@CustomGrid>:
+    canvas.before:
+        Color:
+            # rgba: utils.get_color_from_hex("#247ba0")
+            rgba: app.login_bg
+        Rectangle:
+            size: root.size
+            pos: root.pos
+
+<CustomTabs@MDTabs>:
+    background_color: app.bg_color
+    # color_indicator: 1,0,0,1
+    font_name: 'Poppins'
+    tab_bar_height: dp(50)
+    tab_indicator_anim: True
+    tab_indicator_height: 0
+    tab_indicator_type: 'line'
+    text_color_active: app.green
+    text_color_normal: app.white
+    # underline_color: app.colorBg
+
+
+
+<CustomScrollview@ScrollView>:
+    do_scroll_x: False
+    do_scroll_y: True
+    pos: root.pos
+    canvas.before:
+        Color:
+            # rgba: utils.get_color_from_hex("#247ba0")
+            rgba: app.login_bg
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<BoxLayoutHorizontal@MDBoxLayout>:
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: self.minimum_height
+
+<GLRowsOne@MDGridLayout>:
+    rows: 1
+    size_hint: 1, None
+    height: self.minimum_height
